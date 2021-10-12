@@ -8,64 +8,112 @@
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
+        <div class="toggle-menu" @click="handleMenu">|||</div>
         <el-menu
-          default-active="2"
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
           background-color="#545c64"
           text-color="#fff"
+          active-text-color="orange"
+          :unique-opened="true"
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
+          :default-active="activePath"
         >
           <el-sub-menu
-            v-for="item in MenuList"
+            v-for="item in MenuList.value"
             :key="item.id"
             :index="item.id + ''"
           >
             <template #title>
-              <i class="el-icon-location"></i>
+              <i :class="IconList[item.id]"></i>
               <span>{{ item.authName }}</span>
             </template>
             <el-menu-item
               v-for="item1 in item.children"
               :key="item1.id"
-              :index="item1.id + ''"
+              :index="'/' + item1.path"
+              @click="saveState(item1)"
             >
               <template #title>
-                <i class="el-icon-location"></i>
+                <i class="el-icon-menu"></i>
                 <span>{{ item1.authName }}</span>
               </template></el-menu-item
             >
           </el-sub-menu>
         </el-menu>
       </el-aside>
-      <el-main class="el-main">Main</el-main>
+      <el-main class="el-main"><router-view></router-view></el-main>
     </el-container>
   </el-container>
 </template>
-<script>
-import { getCurrentInstance, created, reactive } from "vue";
+<script lang="ts">
+import { getCurrentInstance, ref, reactive } from "vue";
 
 export default {
   name: "Home",
   setup() {
-    const { proxy } = getCurrentInstance();
-    const MenuList = reactive({});
+    interface Imenulist {
+      value?: Array<any>;
+      [propName: string]: any;
+    }
+    const { proxy }: any = getCurrentInstance();
+    const MenuList: Imenulist = reactive({});
+    const activePath = ref("/users");
+    const isCollapse = ref(false);
+    const IconList = {
+      125: "iconfont icon-user",
+      103: "iconfont icon-tijikongjian",
+      101: "iconfont icon-shangpin",
+      102: "iconfont icon-danju",
+      145: "iconfont icon-baobiao",
+    };
+    const handleOpen = (key: number, keyPath: Array<string>) => {
+      console.log(key, keyPath);
+    };
+    const handleClose = (key: number, keyPath: Array<string>) => {
+      console.log(key, keyPath);
+    };
+
+    //保存菜单栏状态
+    const saveState = (val: any) => {
+      window.sessionStorage.setItem("currentState", "/" + val.path);
+      activePath.value = "/" + val.path;
+    };
+
+    //退出登录
     const logout = () => {
       window.sessionStorage.clear();
       proxy.$router.push("/login");
     };
-    proxy.$axios.get("menus").then((resolve) => {
+
+    //初始化
+    activePath.value = window.sessionStorage.getItem("currentState") as string;
+    proxy.$axios.get("menus").then((resolve: any) => {
       let response = resolve.data;
       if (response.meta.status !== 200) {
         return proxy.$message.error(response.meta.msg);
       }
-      proxy.MenuList = response.data;
-      console.log(proxy.MenuList);
+      MenuList.value = response.data;
     });
+
+    //菜单折叠
+    const handleMenu = () => {
+      isCollapse.value = !isCollapse.value;
+    };
     return {
       logout,
       MenuList,
+      isCollapse,
+      IconList,
+      activePath,
+      handleOpen,
+      handleClose,
+      handleMenu,
+      saveState,
     };
   },
 };
@@ -95,5 +143,20 @@ export default {
 }
 .el-main {
   background: #eaedf1;
+}
+.iconfont {
+  margin-right: 10px;
+}
+.toggle-menu {
+  background-color: #4a5064;
+  color: #fff;
+  font-size: 10px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+ul {
+  border: 0;
 }
 </style>
