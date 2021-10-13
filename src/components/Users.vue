@@ -45,7 +45,12 @@
           icon="el-icon-edit"
           @click="showEditDialog(scope)"
         ></el-button>
-        <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
+        <el-button
+          type="danger"
+          size="mini"
+          icon="el-icon-delete"
+          @click="removeUserById(scope.row.id)"
+        ></el-button>
         <el-tooltip
           effect="dark"
           content="分配角色"
@@ -131,10 +136,8 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="editDialogVisible = false">确认</el-button>
-        <el-button type="primary" @click="editDialogVisible = false"
-          >取消</el-button
-        >
+        <el-button type="primary" @click="editUserInfo">确认</el-button>
+        <el-button @click="editDialogVisible = false">取消</el-button>
       </span>
     </template>
   </el-dialog>
@@ -142,6 +145,7 @@
 <script lang="ts">
 import { getCurrentInstance, reactive } from "@vue/runtime-core";
 import { ref } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   name: "Users",
   setup() {
@@ -163,13 +167,14 @@ export default {
       mobile: "",
     });
     const editForm: any = reactive({
+      id: "",
       username: "",
       email: "",
       mobile: "",
     });
 
     //校验邮箱
-    const checkEmail = (rule, value, cb) => {
+    const checkEmail = (rule: any, value: string, cb: any) => {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
       if (regEmail.test(value)) {
         return cb();
@@ -177,7 +182,7 @@ export default {
       cb(new Error("请输入合法的邮箱"));
     };
     //校验手机号
-    const checkMobile = (rule, value, cb) => {
+    const checkMobile = (rule: any, value: string, cb: any) => {
       const regMobile =
         /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       if (regMobile.test(value)) {
@@ -209,36 +214,27 @@ export default {
         { validator: checkEmail },
       ],
       mobile: [
-        { required: true, message: "请输入邮箱", trigger: "blur" },
+        { required: true, message: "请输入手机", trigger: "blur" },
         { validator: checkMobile },
       ],
     };
     const editFormRules = {
-      username: [
-        { required: true, message: "请输入用户名", trigger: "blur" },
-        {
-          min: 3,
-          max: 10,
-          message: "用户名的长读在3~10个字符之间",
-          trigger: "blur",
-        },
-      ],
       email: [
         { required: true, message: "请输入邮箱", trigger: "blur" },
         { validator: checkEmail },
       ],
       mobile: [
-        { required: true, message: "请输入邮箱", trigger: "blur" },
+        { required: true, message: "请输入手机", trigger: "blur" },
         { validator: checkMobile },
       ],
     };
     //添加用户
     const addUser = () => {
-      proxy.$refs.addFormRef.validate((valid) => {
+      proxy.$refs.addFormRef.validate((valid: boolean) => {
         if (!valid) {
           return;
         }
-        proxy.$axios.post("users", addForm).then((resolve) => {
+        proxy.$axios.post("users", addForm).then((resolve: any) => {
           let response = resolve.data;
           if (response.meta.status !== 201) {
             return proxy.$message.error("添加失败");
@@ -249,6 +245,31 @@ export default {
         });
       });
     };
+
+    //编辑表单提交
+    const editUserInfo = () => {
+      proxy.$refs.editFormRef.validate((valid: boolean) => {
+        if (valid) {
+          console.log("users/" + editForm.id);
+          proxy.$axios
+            .put("users/" + editForm.id, {
+              email: editForm.email,
+              mobile: editForm.mobile,
+            })
+            .then((resolve: any) => {
+              let response = resolve.data;
+              console.log(response);
+              if (response.meta.status !== 200) {
+                return proxy.$message.error("编辑用户信息失败");
+              }
+              editDialogVisible.value = false;
+              getUserList();
+              proxy.$message.success("编辑用户信息成功");
+            });
+        }
+      });
+    };
+
     //数据请求
     const handleSizeChange = (newSize: number) => {
       param.pagesize = newSize;
@@ -281,7 +302,6 @@ export default {
     //清空编辑用户表单
     const editDialogClosed = () => {
       proxy.$refs.editFormRef.resetFields();
-      console.log("aaa");
     };
 
     //数据状态更改
@@ -298,21 +318,59 @@ export default {
     };
 
     //展示编辑对话框
-    const showEditDialog = (scope) => {
+    const showEditDialog = (scope: any) => {
       editDialogVisible.value = true;
-      proxy.$axios.get(`users/${scope.row.id}`).then((resolve) => {
+      proxy.$axios.get(`users/${scope.row.id}`).then((resolve: any) => {
         let response = resolve.data;
         if (response.meta.status !== 200) {
           return proxy.$message.error("数据查询失败");
         }
-        console.log(editForm);
+        editForm.id = response.data.id;
         editForm.username = response.data.username;
         editForm.email = response.data.email;
         editForm.mobile = response.data.mobile;
         // proxy.$message.success("数据查询成功");
-        console.log(editForm);
       });
     };
+
+    //删除用户
+    const removeUserById = (val: number) => {
+      ElMessageBox.confirm("是否删除该用户", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then((resolve) => {
+          if (resolve === "confirm") {
+            console.log("user/" + val);
+            proxy.$axios.delete("users/" + val).then((resolve: any) => {
+              console.log(resolve.data.meta.status);
+              if (resolve.data.meta.status === 200) {
+                ElMessage({
+                  type: "success",
+                  message: "删除成功",
+                });
+                getUserList();
+              } else {
+                ElMessage({
+                  type: "error",
+                  message: "删除失败",
+                });
+                getUserList();
+              }
+            });
+          }
+        })
+        .catch((reject) => {
+          if (reject === "cancel") {
+            ElMessage({
+              type: "info",
+              message: "已取消删除",
+            });
+          }
+        });
+    };
+
     return {
       userList,
       addDialogVisible,
@@ -331,6 +389,8 @@ export default {
       editDialogClosed,
       addUser,
       showEditDialog,
+      editUserInfo,
+      removeUserById,
     };
   },
 };
