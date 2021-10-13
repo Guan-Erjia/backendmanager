@@ -61,6 +61,7 @@
             type="warning"
             size="mini"
             icon="el-icon-setting"
+            @click="setRole(scope.row)"
           ></el-button>
         </el-tooltip>
       </el-table-column>
@@ -134,10 +135,39 @@
         <el-input v-model="editForm.mobile"></el-input>
       </el-form-item>
     </el-form>
+    <span class="dialog-footer">
+      <el-button type="primary" @click="editUserInfo">确认</el-button>
+      <el-button @click="editDialogVisible = false">取消</el-button>
+    </span>
+  </el-dialog>
+
+  <!-- 分配角色的对话框 -->
+  <el-dialog
+    title="分配角色"
+    v-model="setRoleDialogVisible"
+    width="50%"
+    @close="setRoleDialogClosed"
+  >
+    <div>
+      <p>当前的用户：{{ userInfo.username }}</p>
+      <p>当前的角色：{{ userInfo.userInfo }}</p>
+      <p>
+        分配新角色：
+        <el-select v-model="currentSelect" placeholder="Select">
+          <el-option
+            v-for="item in roleList.value"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </p>
+    </div>
     <template #footer>
-      <span class="dialog-footer">
-        <el-button type="primary" @click="editUserInfo">确认</el-button>
-        <el-button @click="editDialogVisible = false">取消</el-button>
+      <span>
+        <el-button @click="setRoleDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -145,7 +175,7 @@
 <script lang="ts">
 import { getCurrentInstance, reactive } from "@vue/runtime-core";
 import { ref } from "vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox, selectGroupKey } from "element-plus";
 export default {
   name: "Users",
   setup() {
@@ -159,7 +189,8 @@ export default {
     const total = ref(0);
     const addDialogVisible = ref(false);
     const editDialogVisible = ref(false);
-
+    const setRoleDialogVisible = ref(false);
+    const currentSelect = ref("");
     const addForm: any = reactive({
       username: "",
       password: "",
@@ -172,7 +203,8 @@ export default {
       email: "",
       mobile: "",
     });
-
+    const userInfo: any = reactive({});
+    const roleList: any = reactive({});
     //校验邮箱
     const checkEmail = (rule: any, value: string, cb: any) => {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
@@ -371,6 +403,46 @@ export default {
         });
     };
 
+    //分配角色
+    const setRole = (val: any) => {
+      userInfo.username = val.username;
+      userInfo.userInfo = val.role_name;
+      userInfo.userId = val.id;
+      proxy.$axios.get("roles").then((resolve: any) => {
+        if (resolve.data.meta.status === 200) {
+          roleList.value = resolve.data.data;
+          setRoleDialogVisible.value = true;
+        } else {
+          proxy.$message.failure("获取角色列表失败");
+        }
+      });
+    };
+
+    //确定分配角色
+    const saveRoleInfo = () => {
+      if (!currentSelect.value) {
+        return proxy.$message.error("请选择要分配的角色");
+      }
+      proxy.$axios
+        .put(`users/${userInfo.userId}/role`, {
+          rid: currentSelect.value,
+        })
+        .then((resolve: any) => {
+          if (resolve.data.meta.status !== 200) {
+            proxy.$message.error("分配角色失败！");
+          } else {
+            proxy.$message.success("分配角色成功！");
+            getUserList;
+            setRoleDialogVisible.value = false;
+          }
+        });
+    };
+
+    //分配角色关闭事件
+    const setRoleDialogClosed = () => {
+      currentSelect.value = "";
+      userInfo.value = {};
+    };
     return {
       userList,
       addDialogVisible,
@@ -391,6 +463,13 @@ export default {
       showEditDialog,
       editUserInfo,
       removeUserById,
+      setRoleDialogVisible,
+      setRole,
+      userInfo,
+      roleList,
+      currentSelect,
+      saveRoleInfo,
+      setRoleDialogClosed,
     };
   },
 };
