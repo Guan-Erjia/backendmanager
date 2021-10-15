@@ -26,13 +26,15 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <!-- 添加动态参数 -->
       <el-tab-pane label="用户管理" name="first">
-        <el-button type="primary" size="mini" :disabled="handleChange()"
+        <el-button type="primary" size="mini" :disabled="buttonUseable"
           >添加参数</el-button
         >
       </el-tab-pane>
       <!-- 添加静态属性 -->
       <el-tab-pane label="用户配置" name="second"
-        ><el-button type="primary" size="mini">添加属性</el-button></el-tab-pane
+        ><el-button type="primary" size="mini" :disabled="buttonUseable"
+          >添加属性</el-button
+        ></el-tab-pane
       >
     </el-tabs>
   </el-card>
@@ -47,6 +49,7 @@ export default {
   setup() {
     const { proxy }: any = getCurrentInstance();
     const cartList: any = reactive([]);
+    const buttonUseable: any = ref(true);
     const currentCheck: any = reactive([]);
     const activeName = ref("first");
     const buttonDisabled: ComputedRef<boolean> = computed(() => {
@@ -72,9 +75,9 @@ export default {
     const handleChange = () => {
       if (proxy.currentCheck.length !== 3) {
         proxy.currentCheck.splice(0, proxy.currentCheck.length);
-        return proxy.currentCheck.length !== 3;
+        buttonUseable.value = true;
       } else {
-        return proxy.currentCheck.length !== 3;
+        buttonUseable.value = false;
       }
     };
     const handleClick = () => {
@@ -89,6 +92,7 @@ export default {
       activeName,
       handleClick,
       buttonDisabled,
+      buttonUseable,
     };
   },
 };
