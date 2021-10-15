@@ -12,13 +12,85 @@
       show-icon
     ></el-alert>
     <el-row class="cat_opt">
-      <el-col><span>选择商品分类：</span></el-col>
+      <el-col
+        ><span>选择商品分类：</span
+        ><el-cascader
+          :props="cateProps"
+          v-model="currentCheck"
+          :options="cartList.value"
+          @change="handleChange"
+        ></el-cascader>
+      </el-col>
     </el-row>
+
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <!-- 添加动态参数 -->
+      <el-tab-pane label="用户管理" name="first">
+        <el-button type="primary" size="mini" :disabled="handleChange()"
+          >添加参数</el-button
+        >
+      </el-tab-pane>
+      <!-- 添加静态属性 -->
+      <el-tab-pane label="用户配置" name="second"
+        ><el-button type="primary" size="mini">添加属性</el-button></el-tab-pane
+      >
+    </el-tabs>
   </el-card>
 </template>
-<script>
+<script lang="ts">
+import { getCurrentInstance, reactive } from "@vue/runtime-core";
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
+import { ComputedRef } from "@vue/reactivity";
 export default {
   name: "Params",
+  setup() {
+    const { proxy }: any = getCurrentInstance();
+    const cartList: any = reactive([]);
+    const currentCheck: any = reactive([]);
+    const activeName = ref("first");
+    const buttonDisabled: ComputedRef<boolean> = computed(() => {
+      console.log(currentCheck);
+      return proxy.currentCheck.length !== 3;
+    });
+    const cateProps = reactive({
+      value: "cat_id",
+      label: "cat_name",
+      children: "children",
+      expandTrigger: "hover",
+    });
+    const getCateList = () => {
+      proxy.$axios.get("categories").then((resolve: any) => {
+        if (resolve.data.meta.status === 200) {
+          cartList.value = resolve.data.data;
+        } else {
+          proxy.$message.error("获取分类列表失败");
+        }
+      });
+    };
+    getCateList();
+    const handleChange = () => {
+      if (proxy.currentCheck.length !== 3) {
+        proxy.currentCheck.splice(0, proxy.currentCheck.length);
+        return proxy.currentCheck.length !== 3;
+      } else {
+        return proxy.currentCheck.length !== 3;
+      }
+    };
+    const handleClick = () => {
+      return;
+    };
+    return {
+      getCateList,
+      cartList,
+      currentCheck,
+      handleChange,
+      cateProps,
+      activeName,
+      handleClick,
+      buttonDisabled,
+    };
+  },
 };
 </script>
 <style lang="less" scoped>
