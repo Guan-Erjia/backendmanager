@@ -5,6 +5,8 @@ import Welcome from "@/components/Welcome.vue"
 import Users from "@/components/Users.vue"
 import Rights from "@/components/Rights.vue"
 import Roles from "@/components/Roles.vue"
+import Goods from "@/components/Goods.vue"
+import Categories from "@/components/Categories.vue"
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
@@ -39,6 +41,14 @@ const routes: Array<RouteRecordRaw> = [
         path: '/roles',
         component: Roles
       },
+      {
+        path: '/goods',
+        component: Goods
+      },
+      {
+        path: '/categories',
+        component: Categories
+      }
 
     ]
   },

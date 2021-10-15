@@ -10,12 +10,14 @@ import './assets/fonts/iconfont.css'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+
 axios.defaults.baseURL = "https://lianghj.top:8888/api/private/v1/"
 axios.defaults.timeout = 10000
 axios.interceptors.request.use((config: any) => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
+
 
 const app = createApp(App)
 app.config.globalProperties.$axios = axios;
