@@ -8,6 +8,7 @@ import Roles from "@/components/Roles.vue"
 import Goods from "@/components/Goods.vue"
 import Categories from "@/components/Categories.vue"
 import Params from "@/components/Params.vue"
+import Add from "@/components/Add.vue"
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
@@ -45,6 +46,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/goods',
         component: Goods
+      },
+      {
+        path: '/goods/add',
+        component: Add
       },
       {
         path: '/categories',

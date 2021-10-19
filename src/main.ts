@@ -24,5 +24,6 @@ app.config.globalProperties.$axios = axios;
 app.use(router)
 app.use(VueAxios, axios)
 app.use(ElementPlus)
+
 app.mount('#app')
 

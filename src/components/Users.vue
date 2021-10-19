@@ -175,9 +175,10 @@
 <script lang="ts">
 import { getCurrentInstance, reactive } from "@vue/runtime-core";
 import { ref } from "vue";
-import { ElMessage, ElMessageBox, selectGroupKey } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 export default {
   name: "Users",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
     const param = reactive({
