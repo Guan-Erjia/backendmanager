@@ -21,6 +21,7 @@
 import { getCurrentInstance, reactive } from "@vue/runtime-core";
 export default {
   name: "Rights",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
     const rightsList: any = reactive([]);
