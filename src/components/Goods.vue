@@ -86,7 +86,7 @@ export default {
         .then((resolve: any) => {
           if (resolve.data.meta.status === 200) {
             resolve.data.data.goods.forEach((item: any) => {
-              item.add_time = dateHandle(item.add_time);
+              item.add_time = proxy.$dateHandle(item.add_time);
             });
             goodList.value = resolve.data.data.goods;
             total.value = resolve.data.data.total;
@@ -96,18 +96,6 @@ export default {
         });
     };
     getGoodData();
-
-    //时间处理
-    const dateHandle = (val: number) => {
-      const dt = new Date(val);
-      const y = dt.getFullYear();
-      const m = (dt.getMonth() + 1 + "").padStart(2, "0");
-      const d = (dt.getDate() + "").padStart(2, "0");
-      const hh = (dt.getHours() + "").padStart(2, "0");
-      const mm = (dt.getMinutes() + "").padStart(2, "0");
-      const ss = (dt.getSeconds() + "").padStart(2, "0");
-      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
-    };
 
     //翻页
     const handleSizeChange = (newSize: number) => {
@@ -156,7 +144,6 @@ export default {
       getGoodData,
       queryInfo,
       goodList,
-      dateHandle,
       handleSizeChange,
       handleCurrentChange,
       total,

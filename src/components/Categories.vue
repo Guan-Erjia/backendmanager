@@ -21,12 +21,10 @@
       :data="categoriesList.value"
       show-checkbox
       node-key="id"
-      default-expand-all
       :expand-on-click-node="false"
-      height="60px"
     >
       <template #default="{ data }">
-        <span class="custom-tree-node">
+        <div class="custom-tree-node">
           <span>{{ data.cat_name }}</span>
           <span>
             <i
@@ -57,7 +55,7 @@
               >删除</el-button
             >
           </span>
-        </span>
+        </div>
       </template>
     </el-tree>
   </el-card>
@@ -263,5 +261,8 @@ i {
 }
 .el-cascader {
   width: 100px;
+}
+.el-tree-node__content {
+  height: 60px !important;
 }
 </style>
