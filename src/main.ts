@@ -24,6 +24,6 @@ app.config.globalProperties.$axios = axios;
 app.use(router)
 app.use(VueAxios, axios)
 app.use(ElementPlus)
-
+// app.use(VueQuill)
 app.mount('#app')
 

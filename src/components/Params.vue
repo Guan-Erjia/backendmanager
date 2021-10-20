@@ -38,6 +38,8 @@
         <el-table :data="manyTableData.value" border stripe>
           <el-table-column type="expand" v-slot="scope">
             <!-- 标签渲染 -->
+
+            <span>{{ scope.row }}</span>
             <el-tag
               v-for="(item, index) in scope.row.attr_vals"
               :key="index"
@@ -46,7 +48,7 @@
               >{{ item }}</el-tag
             >
             <el-input
-              v-if="scope.row.inputVisible"
+              v-show="scope.row.inputVisible"
               ref="saveTagInput"
               v-model="scope.row.inputValue"
               class="input-new-tag"
@@ -56,7 +58,7 @@
             >
             </el-input>
             <el-button
-              v-else
+              v-show="!scope.row.inputVisible"
               class="button-new-tag"
               size="small"
               @click="showInput(scope.row)"
@@ -255,9 +257,6 @@ export default {
       if (proxy.currentCheck.length !== 3) {
         proxy.currentCheck.splice(0, proxy.currentCheck.length);
         buttonUseable.value = true;
-        // currentCheck.value = [];
-        // manyTableData.value = [];
-        // onlyTableData.value = [];
       } else if (proxy.currentCheck.length === 3) {
         cateId.value = proxy.currentCheck[2];
         getParams();
@@ -333,7 +332,7 @@ export default {
             editForm.attr_write = resolve.data.data.attr_write;
             editForm.cat_id = resolve.data.data.cat_id;
           } else {
-            proxy.$message.failure("获取信息失败");
+            proxy.$message.error("获取信息失败");
           }
         });
     };
@@ -355,7 +354,7 @@ export default {
                   proxy.$message.success("删除参数成功");
                   getParams();
                 } else {
-                  proxy.$message.failure("删除参数失败");
+                  proxy.$message.error("删除参数失败");
                   getParams();
                 }
               });
@@ -397,7 +396,7 @@ export default {
                 proxy.$message.success("添加参数成功");
                 getParams();
               } else {
-                proxy.$message.failure("添加参数失败");
+                proxy.$message.error("添加参数失败");
               }
             });
         }
@@ -463,7 +462,7 @@ export default {
           if (resolve.data.meta.status === 200) {
             proxy.$message.success("修改参数成功");
           } else {
-            proxy.$message.failure("修改参数失败");
+            proxy.$message.error("修改参数失败");
           }
         });
     };

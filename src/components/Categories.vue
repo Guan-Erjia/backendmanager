@@ -110,6 +110,7 @@ interface Iresult {
 import { getCurrentInstance, reactive, ref } from "@vue/runtime-core";
 export default {
   name: "Categories",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
     const getCateList = () => {
@@ -192,7 +193,7 @@ export default {
             .then((resolve: Iresult) => {
               console.log(resolve);
               if (resolve.data.meta.status !== 201) {
-                proxy.$message.failure("添加分类失败");
+                proxy.$message.error("添加分类失败");
               } else {
                 proxy.$message.success("添加分类成功");
                 getCateList();

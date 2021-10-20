@@ -143,7 +143,7 @@ export default {
                 proxy.$message.success("权限删除成功！");
                 role.children = resolve.data.data;
               } else {
-                proxy.$message.failure("权限删除失败！");
+                proxy.$message.error("权限删除失败！");
               }
             });
         })
@@ -196,7 +196,7 @@ export default {
             setRightDialogVisible.value = false;
             proxy.$message.success("更新成功");
           } else {
-            proxy.$message.failure("更新失败");
+            proxy.$message.error("更新失败");
           }
         });
     };

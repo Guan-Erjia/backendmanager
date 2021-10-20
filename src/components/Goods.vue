@@ -90,7 +90,6 @@ export default {
             });
             goodList.value = resolve.data.data.goods;
             total.value = resolve.data.data.total;
-            proxy.$message.success("获取商品列表成功");
           } else {
             proxy.$message.error("获取商品列表失败");
           }
@@ -137,7 +136,7 @@ export default {
                   proxy.$message.success("删除成功");
                   getGoodData();
                 } else {
-                  proxy.$message.failure("删除失败");
+                  proxy.$message.error("删除失败");
                   getGoodData();
                 }
               });

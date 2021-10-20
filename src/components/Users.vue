@@ -414,7 +414,7 @@ export default {
           roleList.value = resolve.data.data;
           setRoleDialogVisible.value = true;
         } else {
-          proxy.$message.failure("获取角色列表失败");
+          proxy.$message.error("获取角色列表失败");
         }
       });
     };

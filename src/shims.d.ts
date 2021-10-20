@@ -1,4 +1,4 @@
-declare module 'vue-table-with-tree-grid'
+declare module 'lodash'
 
 declare module '*.vue' {
   import { ComponentOptions } from 'vue'
