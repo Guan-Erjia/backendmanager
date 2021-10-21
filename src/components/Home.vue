@@ -2,7 +2,7 @@
   <el-container class="el-container">
     <el-header class="el-header">
       <div>
-        <img src="@/assets/heima.png" alt="" />
+        <img class="title" src="@/assets/home.gif" alt="" />
         <span>后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
@@ -149,5 +149,8 @@ export default {
 }
 ul {
   border: 0;
+}
+.title{
+  height: 60px;
 }
 </style>
