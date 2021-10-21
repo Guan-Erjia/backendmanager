@@ -102,9 +102,10 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive, ref } from "@vue/runtime-core";
+import { getCurrentInstance, reactive, ref } from "vue";
 export default {
   name: "Roles",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
     const roleId: any = ref("");
@@ -135,7 +136,7 @@ export default {
           cancelButtonText: "取消",
           type: "warning",
         })
-        .then((resolve: string) => {
+        .then(() => {
           proxy.$axios
             .delete(`roles/${role.id}/rights/${rightId}`)
             .then((resolve: any) => {
@@ -147,7 +148,7 @@ export default {
               }
             });
         })
-        .catch((reject: string) => {
+        .catch(() => {
           proxy.$message.info("取消了删除操作！");
         });
     };

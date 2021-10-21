@@ -39,6 +39,7 @@ import { reactive, ref } from "@vue/reactivity";
 import { getCurrentInstance } from "vue";
 export default {
   name: "Login",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const login_form = reactive({
       username: "admin",

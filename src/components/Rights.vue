@@ -18,7 +18,7 @@
   </el-card>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive } from "@vue/runtime-core";
+import { getCurrentInstance, reactive } from "vue";
 export default {
   name: "Rights",
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

@@ -173,7 +173,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive } from "@vue/runtime-core";
+import { getCurrentInstance, reactive } from "vue";
 import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 export default {

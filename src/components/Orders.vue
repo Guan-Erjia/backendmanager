@@ -30,7 +30,7 @@
       <el-table-column label="下单时间" prop="create_time" v-slot="scope">{{
         scope.row.create_time
       }}</el-table-column>
-      <el-table-column label="操作" v-slot="scope">
+      <el-table-column label="操作">
         <el-button
           type="primary"
           size="mini"
@@ -43,8 +43,7 @@
           icon="el-icon-location"
           @click="showProgressBox"
         ></el-button>
-        {{ scope.row.order_id }}</el-table-column
-      >
+      </el-table-column>
     </el-table>
     <!-- 页码区域 -->
     <el-pagination
@@ -139,8 +138,6 @@ export default {
             orderList.value.forEach((item: any) => {
               item.create_time = proxy.$dateHandle(item.create_time);
             });
-            console.log(resolve);
-            
           } else {
             proxy.$message.error("获取订单信息失败");
           }

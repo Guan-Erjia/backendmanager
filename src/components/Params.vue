@@ -197,7 +197,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive } from "@vue/runtime-core";
+import { getCurrentInstance, reactive } from "vue";
 import { nextTick, Ref, ref } from "vue";
 export default {
   name: "Params",

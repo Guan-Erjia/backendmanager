@@ -2,10 +2,10 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
+import '@/assets/css/global.css'
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import '@/assets/css/global.css'
 import './assets/fonts/iconfont.css'
 
 //修改element页码区域文字默认样式
@@ -15,10 +15,19 @@ import zhLang from 'element-plus/lib/locale/lang/zh-cn'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+//导入加载效果包
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 axios.defaults.baseURL = "https://lianghj.top:8888/api/private/v1/"
 axios.defaults.timeout = 10000
 axios.interceptors.request.use((config: any) => {
+  NProgress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
+axios.interceptors.response.use((config) => {
+  NProgress.done()
   return config
 })
 

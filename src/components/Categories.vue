@@ -105,7 +105,7 @@ interface Iresult {
   handers: any;
   request: XMLHttpRequest;
 }
-import { getCurrentInstance, reactive, ref } from "@vue/runtime-core";
+import { getCurrentInstance, reactive, ref } from "vue";
 export default {
   name: "Categories",
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -120,6 +120,7 @@ export default {
         })
         .then((resolve: Iresult) => {
           if (resolve.data.meta.status === 200) {
+            console.log(resolve);
             categoriesList.value = resolve.data.data;
           } else {
             proxy.$message.error("获取商品分类失败");

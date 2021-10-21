@@ -1,16 +1,18 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import Login from '@/components/Login.vue'
-import Home from "@/components/Home.vue"
-import Welcome from "@/components/Welcome.vue"
-import Users from "@/components/Users.vue"
-import Rights from "@/components/Rights.vue"
-import Roles from "@/components/Roles.vue"
-import Goods from "@/components/Goods.vue"
-import Categories from "@/components/Categories.vue"
-import Params from "@/components/Params.vue"
-import Add from "@/components/Add.vue"
-import Orders from "@/components/Orders.vue"
-import Reports from "@/components/Reports.vue"
+const Login = () => import('@/components/Login.vue')
+const Home = () => import('@/components/Home.vue')
+const Welcome = () => import('@/components/Welcome.vue')
+const Users = () => import('@/components/Users.vue')
+const Rights = () => import('@/components/Rights.vue')
+const Roles = () => import('@/components/Roles.vue')
+const Goods = () => import('@/components/Goods.vue')
+const Categories = () => import('@/components/Categories.vue')
+const Params = () => import('@/components/Params.vue')
+const Add = () => import('@/components/Add.vue')
+// import Add from '@/components/Add.vue'
+const Orders = () => import('@/components/Orders.vue')
+const Reports = () => import('@/components/Reports.vue')
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
@@ -84,7 +86,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') return next()
   const tokenStr = window.sessionStorage.getItem('token')
-  console.log(tokenStr);
+  // console.log(tokenStr);
 
   if (!tokenStr) return next('/login')
   return next()

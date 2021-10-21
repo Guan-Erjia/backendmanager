@@ -12,8 +12,6 @@
         <div class="toggle-menu" @click="handleMenu">|||</div>
         <el-menu
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           background-color="#545c64"
           text-color="#fff"
           active-text-color="orange"
@@ -55,6 +53,7 @@ import { getCurrentInstance, ref, reactive } from "vue";
 
 export default {
   name: "Home",
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     interface Imenulist {
       value?: Array<any>;
@@ -70,12 +69,6 @@ export default {
       101: "iconfont icon-shangpin",
       102: "iconfont icon-danju",
       145: "iconfont icon-baobiao",
-    };
-    const handleOpen = (key: number, keyPath: Array<string>) => {
-      console.log(key, keyPath);
-    };
-    const handleClose = (key: number, keyPath: Array<string>) => {
-      console.log(key, keyPath);
     };
 
     //保存菜单栏状态
@@ -110,8 +103,6 @@ export default {
       isCollapse,
       IconList,
       activePath,
-      handleOpen,
-      handleClose,
       handleMenu,
       saveState,
     };
