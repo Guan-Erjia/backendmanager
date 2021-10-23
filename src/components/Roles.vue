@@ -7,7 +7,9 @@
   <el-card>
     <el-row>
       <el-col>
-        <el-button type="primary">添加角色</el-button>
+        <el-button type="primary" @click="showAddRoleDialog"
+          >添加角色</el-button
+        >
       </el-col>
     </el-row>
     <el-table :data="rolesList.value" border stripe>
@@ -59,10 +61,18 @@
       <el-table-column label="角色名称" prop="roleName"></el-table-column>
       <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
       <el-table-column label="操作" width="300px" v-slot="scope">
-        <el-button type="primary" icon="el-icon-edit" size="mini"
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          size="mini"
+          @click="showEditRoleDialog(scope.row)"
           >编辑</el-button
         >
-        <el-button type="danger" icon="el-icon-delete" size="mini"
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          @click="deleteRole(scope.row)"
           >删除</el-button
         >
         <el-button
@@ -100,9 +110,65 @@
       </span>
     </template>
   </el-dialog>
+
+  <!-- 添加角色对话框 -->
+  <el-dialog
+    v-model="addRoleDialogVisible"
+    title="添加角色"
+    width="50%"
+    @close="addRoleDialogClosed"
+  >
+    <el-form
+      :model="addRoleForm"
+      :rules="addRoleFormRules"
+      ref="addRoleFormRef"
+      label-width="160px"
+    >
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="addRoleForm.roleName" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="角色描述">
+        <el-input v-model="addRoleForm.roleDesc" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="addRoleDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="addRole">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+
+  <!-- 编辑角色对话框 -->
+  <el-dialog
+    v-model="editRoleDialogVisible"
+    title="编辑角色"
+    width="50%"
+    @close="editRoleDialogClosed"
+  >
+    <el-form
+      :model="editRoleForm"
+      :rules="editRoleFormRules"
+      ref="editRoleFormRef"
+      label-width="160px"
+    >
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="editRoleForm.roleName" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="角色描述">
+        <el-input v-model="editRoleForm.roleDesc" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="editRoleDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="editRole">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive, ref } from "vue";
+import { getCurrentInstance, reactive, Ref, ref } from "vue";
 export default {
   name: "Roles",
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -201,6 +267,110 @@ export default {
           }
         });
     };
+
+    //添加角色
+    const showAddRoleDialog = () => {
+      addRoleDialogVisible.value = true;
+    };
+    const addRoleDialogVisible: Ref<boolean> = ref(false);
+    const addRoleForm = reactive({
+      roleName: "",
+      roleDesc: "",
+    });
+    const addRoleFormRules: any = reactive({
+      roleName: [
+        {
+          required: true,
+          message: "请输入分类名称",
+          trigger: "blur",
+        },
+      ],
+    });
+    const addRole = () => {
+      proxy.$axios.post("roles", addRoleForm).then((resolve: any) => {
+        if (resolve.data.meta.status === 201) {
+          proxy.$message.success(
+            "ID:" + resolve.data.data.roleId + resolve.data.meta.msg
+          );
+          getRolesList();
+          addRoleDialogVisible.value = false;
+        } else {
+          proxy.$message.error("创建失败");
+          getRolesList();
+        }
+      });
+    };
+    const addRoleDialogClosed = () => {
+      proxy.$refs.addRoleFormRef.resetFields();
+    };
+
+    //编辑角色
+    const editRoleID = ref(0);
+    const showEditRoleDialog = (val: any) => {
+      editRoleID.value = val.id;
+      editRoleDialogVisible.value = true;
+      return;
+    };
+    const editRoleDialogVisible: Ref<boolean> = ref(false);
+    const editRoleForm = reactive({
+      roleName: "",
+      roleDesc: "",
+    });
+    const editRoleFormRules: any = reactive({
+      roleName: [
+        {
+          required: true,
+          message: "请输入分类名称",
+          trigger: "blur",
+        },
+      ],
+    });
+    const editRole = () => {
+      proxy.$axios
+        .put(`roles/${editRoleID.value}`, editRoleForm)
+        .then((resolve: any) => {
+          if (resolve.data.meta.status === 200) {
+            proxy.$message.success(
+              "ID:" + resolve.data.data.roleId + "编辑成功"
+            );
+            editRoleDialogVisible.value = false;
+            getRolesList();
+          } else {
+            proxy.$message.error("编辑失败");
+            getRolesList();
+          }
+        });
+    };
+    const editRoleDialogClosed = () => {
+      proxy.$refs.editRoleFormRef.resetFields();
+    };
+
+    //删除角色
+    const deleteRole = (val: any) => {
+      proxy
+        .$confirm("此操作将永久删除角色，是否继续？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .then((resolve: boolean) => {
+          if (resolve) {
+            proxy.$axios.delete(`roles/${val.id}`).then((resolve: any) => {
+              if (resolve.data.meta.status === 200) {
+                proxy.$message.success("删除角色成功");
+                getRolesList();
+              } else {
+                proxy.$message.error("删除角色失败");
+                getRolesList();
+              }
+            });
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    };
+
     return {
       rolesList,
       rightList,
@@ -214,6 +384,20 @@ export default {
       setRightDialogClosed,
       allotRights,
       roleId,
+      showAddRoleDialog,
+      addRoleForm,
+      addRoleDialogVisible,
+      addRoleFormRules,
+      addRole,
+      showEditRoleDialog,
+      addRoleDialogClosed,
+      editRoleDialogVisible,
+      editRoleForm,
+      editRoleFormRules,
+      editRole,
+      editRoleDialogClosed,
+      editRoleID,
+      deleteRole,
     };
   },
 };
