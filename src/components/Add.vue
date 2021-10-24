@@ -133,6 +133,7 @@ export default {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
+
     const activeIndex: Ref<string> = ref("0");
     const headerObj = reactive({
       Authorization: window.sessionStorage.getItem("token"),
@@ -140,12 +141,7 @@ export default {
     const currentStep: Ref<number> = computed(() =>
       parseInt(activeIndex.value)
     );
-    const manyTableData: any = reactive([]);
-    const onlyTableData: any = reactive([]);
-    const checkList: any = reactive([]);
-    const previewPath: any = ref("");
-    const previewVisible = ref(false);
-    const editorSelf: any = reactive({});
+
     const addForm: any = reactive({
       goods_name: "",
       goods_price: 0,
@@ -164,23 +160,7 @@ export default {
       children: "children",
       expandTrigger: "hover",
     });
-    const addFormRules = reactive({
-      goods_name: [
-        { required: true, message: "请输入商品名称", trigger: "blur" },
-      ],
-      goods_price: [
-        { required: true, message: "请输入商品价格", trigger: "blur" },
-      ],
-      goods_weight: [
-        { required: true, message: "请输入商品重量", trigger: "blur" },
-      ],
-      goods_number: [
-        { required: true, message: "请输入商品数量", trigger: "blur" },
-      ],
-      goods_cat: [
-        { required: true, message: "请选择商品分类", trigger: "blur" },
-      ],
-    });
+
     const getCateList = () => {
       proxy.$axios.get("categories").then((resolve: any) => {
         if (resolve.data.meta.status === 200) {
@@ -214,6 +194,8 @@ export default {
     };
 
     //点击标签页
+    const manyTableData: any = reactive([]);
+    const onlyTableData: any = reactive([]);
     const tabClick = async () => {
       let catId = 465;
       if (addForm.goods_cat.length !== 0) {
@@ -255,10 +237,13 @@ export default {
     };
 
     //图片预览
+    const previewPath: any = ref("");
+    const previewVisible = ref(false);
     const handlePreview = (file: any) => {
       previewPath.value = file.response.data.url;
       previewVisible.value = true;
     };
+
     //图片移除
     const handleRemove = (file: any) => {
       const filePath = file.response.data.tmp_path;
@@ -275,6 +260,7 @@ export default {
     };
 
     //富文本编辑器挂载
+    const editorSelf: any = reactive({});
     onMounted(() => {
       const editor = new E("#div1");
       editorSelf.value = editor;
@@ -284,6 +270,23 @@ export default {
     });
 
     //添加商品
+    const addFormRules = reactive({
+      goods_name: [
+        { required: true, message: "请输入商品名称", trigger: "blur" },
+      ],
+      goods_price: [
+        { required: true, message: "请输入商品价格", trigger: "blur" },
+      ],
+      goods_weight: [
+        { required: true, message: "请输入商品重量", trigger: "blur" },
+      ],
+      goods_number: [
+        { required: true, message: "请输入商品数量", trigger: "blur" },
+      ],
+      goods_cat: [
+        { required: true, message: "请选择商品分类", trigger: "blur" },
+      ],
+    });
     const addGoods = () => {
       addForm.goods_introduce = editorSelf.value.txt.html();
       proxy.$refs.addFormRef.validate((valid: boolean) => {
@@ -334,7 +337,6 @@ export default {
       beforeTabLeave,
       tabClick,
       manyTableData,
-      checkList,
       onlyTableData,
       handlePreview,
       handleRemove,

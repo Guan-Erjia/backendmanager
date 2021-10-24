@@ -60,7 +60,7 @@ export default {
       [propName: string]: any;
     }
     const { proxy }: any = getCurrentInstance();
-    const MenuList: Imenulist = reactive({});
+
     const activePath = ref("/users");
     const isCollapse = ref(false);
     const IconList = {
@@ -85,6 +85,7 @@ export default {
 
     //初始化
     activePath.value = window.sessionStorage.getItem("currentState") as string;
+    const MenuList: Imenulist = reactive({});
     proxy.$axios.get("menus").then((resolve: any) => {
       let response = resolve.data;
       if (response.meta.status !== 200) {
@@ -150,7 +151,7 @@ export default {
 ul {
   border: 0;
 }
-.title{
+.title {
   height: 60px;
 }
 </style>

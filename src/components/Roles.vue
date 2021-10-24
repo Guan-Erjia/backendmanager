@@ -174,7 +174,7 @@ export default {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
-    const roleId: any = ref("");
+    const roleId: Ref<string> = ref("");
     const rolesList: any = reactive([]);
     const rightList: any = reactive([]);
     const treeProps: any = reactive({

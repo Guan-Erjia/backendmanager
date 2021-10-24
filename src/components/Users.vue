@@ -173,7 +173,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { getCurrentInstance, reactive } from "vue";
+import { getCurrentInstance, reactive, Ref } from "vue";
 import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 export default {
@@ -186,26 +186,11 @@ export default {
       pagenum: 1,
       pagesize: 2,
     });
-    const userList: any = reactive([]);
+
     const total = ref(0);
-    const addDialogVisible = ref(false);
-    const editDialogVisible = ref(false);
-    const setRoleDialogVisible = ref(false);
-    const currentSelect = ref("");
-    const addForm: any = reactive({
-      username: "",
-      password: "",
-      email: "",
-      mobile: "",
-    });
-    const editForm: any = reactive({
-      id: "",
-      username: "",
-      email: "",
-      mobile: "",
-    });
-    const userInfo: any = reactive({});
-    const roleList: any = reactive({});
+
+    const currentSelect: Ref<string> = ref("");
+
     //校验邮箱
     const checkEmail = (rule: any, value: string, cb: any) => {
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
@@ -223,6 +208,14 @@ export default {
       }
       cb(new Error("请输入合法的手机号"));
     };
+
+    //添加用户
+    const addForm: any = reactive({
+      username: "",
+      password: "",
+      email: "",
+      mobile: "",
+    });
     const addFormRules = {
       username: [
         { required: true, message: "请输入用户名", trigger: "blur" },
@@ -251,17 +244,7 @@ export default {
         { validator: checkMobile },
       ],
     };
-    const editFormRules = {
-      email: [
-        { required: true, message: "请输入邮箱", trigger: "blur" },
-        { validator: checkEmail },
-      ],
-      mobile: [
-        { required: true, message: "请输入手机", trigger: "blur" },
-        { validator: checkMobile },
-      ],
-    };
-    //添加用户
+    const addDialogVisible = ref(false);
     const addUser = () => {
       proxy.$refs.addFormRef.validate((valid: boolean) => {
         if (!valid) {
@@ -280,6 +263,23 @@ export default {
     };
 
     //编辑表单提交
+    const editForm: any = reactive({
+      id: "",
+      username: "",
+      email: "",
+      mobile: "",
+    });
+    const editFormRules = {
+      email: [
+        { required: true, message: "请输入邮箱", trigger: "blur" },
+        { validator: checkEmail },
+      ],
+      mobile: [
+        { required: true, message: "请输入手机", trigger: "blur" },
+        { validator: checkMobile },
+      ],
+    };
+    const editDialogVisible = ref(false);
     const editUserInfo = () => {
       proxy.$refs.editFormRef.validate((valid: boolean) => {
         if (valid) {
@@ -312,6 +312,8 @@ export default {
       param.pagenum = newPage;
       getUserList();
     };
+
+    const userList: any = reactive([]);
     const getUserList = () => {
       proxy.$axios
         .get("users", {
@@ -405,6 +407,9 @@ export default {
     };
 
     //分配角色
+    const roleList: any = reactive({});
+    const userInfo: any = reactive({});
+    const setRoleDialogVisible = ref(false);
     const setRole = (val: any) => {
       userInfo.username = val.username;
       userInfo.userInfo = val.role_name;

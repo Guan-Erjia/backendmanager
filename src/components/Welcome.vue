@@ -1,6 +1,5 @@
-<template>
-  <div>Welcome</div>
-</template>
+<template>WELCOME</template>
+
 <script>
 export default {
   name: "Welcome",

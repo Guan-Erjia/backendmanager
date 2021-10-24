@@ -203,18 +203,13 @@ export default {
   name: "Params",
   setup(): any {
     const { proxy }: any = getCurrentInstance();
-    const cartList: any = reactive([]);
-    const buttonUseable: Ref<boolean> = ref(true);
 
-    const currentCheck: any = reactive([]);
     const cateId: any = ref("");
     const activeName = ref("many");
 
     const manyTableData: any = reactive([]);
     const onlyTableData: any = reactive([]);
-    const titleText: Ref<string> = ref("");
-    const paramDialogVisible: Ref<boolean> = ref(false);
-    const editDialogVisible: Ref<boolean> = ref(false);
+
     const addForm: any = reactive({});
     const editForm: any = reactive({});
     const paramDialogTitle: Ref<string> = ref("");
@@ -242,6 +237,8 @@ export default {
       children: "children",
       expandTrigger: "hover",
     });
+
+    const cartList: any = reactive([]);
     const getCateList = () => {
       proxy.$axios.get("categories").then((resolve: any) => {
         if (resolve.data.meta.status === 200) {
@@ -252,6 +249,9 @@ export default {
       });
     };
     getCateList();
+
+    const buttonUseable: Ref<boolean> = ref(true);
+    const currentCheck: any = reactive([]);
     const handleChange = () => {
       buttonUseable.value = false;
       if (proxy.currentCheck.length !== 3) {
@@ -296,6 +296,7 @@ export default {
     };
 
     //显示添加参数对话框
+    const paramDialogVisible: Ref<boolean> = ref(false);
     const showAddParamsDialog = () => {
       paramDialogVisible.value = true;
       if (activeName.value === "many") {
@@ -306,6 +307,7 @@ export default {
     };
 
     //显示修改参数对话框
+    const editDialogVisible: Ref<boolean> = ref(false);
     const showEditDialog = (val: number) => {
       console.log(val);
       editDialogVisible.value = true;
@@ -484,7 +486,6 @@ export default {
       getParams,
       manyTableData,
       onlyTableData,
-      titleText,
       showAddParamsDialog,
       paramDialogVisible,
       editDialogVisible,

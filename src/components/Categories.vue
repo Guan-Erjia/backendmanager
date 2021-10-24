@@ -111,6 +111,14 @@ export default {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setup() {
     const { proxy }: any = getCurrentInstance();
+    const cascaderProps: any = reactive({
+      expandTrigger: "hover",
+      value: "cat_id",
+      label: "cat_name",
+      children: "children",
+      checkStrictly: true,
+    });
+    const categoriesList: any = reactive([]);
     const getCateList = () => {
       proxy.$axios
         .get("categories", {
@@ -128,21 +136,13 @@ export default {
         });
     };
     getCateList();
-    const categoriesList: any = reactive([]);
-    const addCategoryDialogVisible: any = ref(false);
-    const cascaderProps: any = reactive({
-      expandTrigger: "hover",
-      value: "cat_id",
-      label: "cat_name",
-      children: "children",
-      checkStrictly: true,
-    });
+
     const addCateForm: any = reactive({
       cat_name: "a",
       cat_pid: 0,
       cat_level: 0,
     });
-    const parentCateList: any = reactive([]);
+
     const addCateFormRules: any = reactive({
       cat_name: [
         {
@@ -152,9 +152,10 @@ export default {
         },
       ],
     });
-    const hasSelected: any = reactive([0]);
 
     //获取添加的分类列表
+    const addCategoryDialogVisible: any = ref(false);
+    const parentCateList: any = reactive([]);
     const addCategory = () => {
       proxy.$axios
         .get("categories", {
@@ -171,6 +172,7 @@ export default {
     };
 
     //表单改变
+    const hasSelected: any = reactive([0]);
     const parentCateChanged = () => {
       console.log(proxy.hasSelected);
       if (proxy.hasSelected && proxy.hasSelected.length > 0) {
@@ -191,12 +193,12 @@ export default {
             .post("categories", addCateForm)
             .then((resolve: Iresult) => {
               console.log(resolve);
-              if (resolve.data.meta.status !== 201) {
-                proxy.$message.error("添加分类失败");
-              } else {
+              if (resolve.data.meta.status === 201) {
                 proxy.$message.success("添加分类成功");
                 getCateList();
                 addCategoryDialogVisible.value = false;
+              } else {
+                proxy.$message.error("添加分类失败");
               }
             });
         }
