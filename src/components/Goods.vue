@@ -23,24 +23,37 @@
       </el-col>
     </el-row>
     <el-table :data="goodList.value" border stripe>
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column label="商品名称" prop="goods_name"></el-table-column>
+      <el-table-column type="index" align="center" label="#"></el-table-column>
+      <el-table-column
+        label="商品名称"
+        min-width="300"
+        prop="goods_name"
+      ></el-table-column>
       <el-table-column
         label="商品价格(元)"
         prop="goods_price"
-        width="60px"
+        align="center"
+        min-width="100"
       ></el-table-column>
       <el-table-column
         label="商品重量"
         prop="goods_weight"
-        width="70px"
+        align="center"
+        min-width="100"
       ></el-table-column>
       <el-table-column
         label="创建时间"
         prop="add_time"
-        width="140px"
+        align="center"
+        min-width="200"
       ></el-table-column>
-      <el-table-column label="操作" width="130px" v-slot="scope">
+      <el-table-column
+        label="操作"
+        align="center"
+        min-width="150"
+        fixed="right"
+        v-slot="scope"
+      >
         <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
         <el-button
           type="danger"
@@ -74,14 +87,14 @@ export default {
     const queryInfo: any = reactive({
       query: "",
       pagenum: 1,
-      pagesize: 10,
+      pagesize: 10
     });
     const total: Ref<number> = ref(0);
     const goodList: any = reactive([]);
     const getGoodData = () => {
       proxy.$axios
         .get(`/goods`, {
-          params: queryInfo,
+          params: queryInfo
         })
         .then((resolve: any) => {
           if (resolve.data.meta.status === 200) {
@@ -113,7 +126,7 @@ export default {
         .$confirm("此操作将永久删除商品，是否继续？", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning",
+          type: "warning"
         })
         .then((resolve: boolean) => {
           if (resolve) {
@@ -148,8 +161,8 @@ export default {
       handleCurrentChange,
       total,
       removeById,
-      goAddPage,
+      goAddPage
     };
-  },
+  }
 };
 </script>

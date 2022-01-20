@@ -18,19 +18,48 @@
     ></el-row>
     <el-table :data="orderList.value" border stripe>
       <el-table-column label="#" type="index"></el-table-column>
-      <el-table-column label="订单编号" prop="order_number"></el-table-column>
-      <el-table-column label="订单价格" prop="order_price"></el-table-column>
-      <el-table-column label="是否付款" prop="pay_status" v-slot="scope"
+      <el-table-column
+        label="订单编号"
+        prop="order_number"
+        min-width="200"
+      ></el-table-column>
+      <el-table-column
+        label="订单价格"
+        align="center"
+        prop="order_price"
+        min-width="100"
+      ></el-table-column>
+      <el-table-column
+        label="是否付款"
+        prop="pay_status"
+        align="center"
+        v-slot="scope"
+        min-width="100"
         ><el-tag v-if="scope.row.pay_status === '1'" type="success"
           >已付款</el-tag
         >
         <el-tag v-else type="danger">未付款</el-tag>
       </el-table-column>
-      <el-table-column label="是否发货" prop="is_send"></el-table-column>
-      <el-table-column label="下单时间" prop="create_time" v-slot="scope">{{
-        scope.row.create_time
-      }}</el-table-column>
-      <el-table-column label="操作">
+      <el-table-column
+        label="是否发货"
+        prop="is_send"
+        min-width="100"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        label="下单时间"
+        prop="create_time"
+        v-slot="scope"
+        align="center"
+        min-width="200"
+        >{{ scope.row.create_time }}</el-table-column
+      >
+      <el-table-column
+        label="操作"
+        align="center"
+        fixed="right"
+        min-width="200"
+      >
         <el-button
           type="primary"
           size="mini"
@@ -120,7 +149,7 @@ export default {
     const queryInfo = reactive({
       query: "",
       pagenum: 1,
-      pagesize: 10,
+      pagesize: 10
     });
     const total = ref(0);
     const orderList: any = reactive([]);
@@ -129,7 +158,7 @@ export default {
     const getOrderList = () => {
       proxy.$axios
         .get("orders", {
-          params: queryInfo,
+          params: queryInfo
         })
         .then((resolve: any) => {
           if (resolve.data.meta.status === 200) {
@@ -158,15 +187,13 @@ export default {
     const cityData1: any = reactive(cityData);
     const addressForm: any = reactive({
       address1: [],
-      address2: "",
+      address2: ""
     });
     const addressFormRuels = reactive({
       address1: [
-        { required: true, message: "请选择省市区县", trigger: "blur" },
+        { required: true, message: "请选择省市区县", trigger: "blur" }
       ],
-      address2: [
-        { required: true, message: "请填写详细地址", trigger: "blur" },
-      ],
+      address2: [{ required: true, message: "请填写详细地址", trigger: "blur" }]
     });
 
     //地址编辑显示和隐藏
@@ -213,9 +240,9 @@ export default {
       addressDialogClosed,
       showProgressBox,
       progressVisible,
-      progressInfo,
+      progressInfo
     };
-  },
+  }
 };
 </script>
 <style lang="less" scoped>

@@ -27,18 +27,50 @@
     </el-row>
     <!-- 用户列表区 -->
     <el-table :data="userList.value" style="width: 100%" border stripe>
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="username" label="姓名" />
-      <el-table-column prop="email" label="邮箱" />
-      <el-table-column prop="mobile" label="电话" />
-      <el-table-column prop="role_name" label="角色" />
-      <el-table-column prop="mg_state" label="状态" v-slot="scope">
+      <el-table-column type="index" align="center" label="#"></el-table-column>
+      <el-table-column
+        prop="username"
+        align="center"
+        min-width="200"
+        label="姓名"
+      />
+      <el-table-column
+        prop="email"
+        align="center"
+        min-width="200"
+        label="邮箱"
+      />
+      <el-table-column
+        prop="mobile"
+        align="center"
+        min-width="150"
+        label="电话"
+      />
+      <el-table-column
+        prop="role_name"
+        align="center"
+        min-width="150"
+        label="角色"
+      />
+      <el-table-column
+        prop="mg_state"
+        align="center"
+        min-width="100"
+        label="状态"
+        v-slot="scope"
+      >
         <el-switch
           v-model="scope.row.mg_state"
           @change="userDataChange(scope.row)"
         />
       </el-table-column>
-      <el-table-column label="操作" width="180px" v-slot="scope">
+      <el-table-column
+        label="操作"
+        min-width="180px"
+        fixed="right"
+        align="center"
+        v-slot="scope"
+      >
         <el-button
           type="primary"
           size="mini"
@@ -184,7 +216,7 @@ export default {
     const param = reactive({
       query: "",
       pagenum: 1,
-      pagesize: 2,
+      pagesize: 2
     });
 
     const total = ref(0);
@@ -201,8 +233,7 @@ export default {
     };
     //校验手机号
     const checkMobile = (rule: any, value: string, cb: any) => {
-      const regMobile =
-        /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
       if (regMobile.test(value)) {
         return cb();
       }
@@ -214,7 +245,7 @@ export default {
       username: "",
       password: "",
       email: "",
-      mobile: "",
+      mobile: ""
     });
     const addFormRules = {
       username: [
@@ -223,8 +254,8 @@ export default {
           min: 3,
           max: 10,
           message: "用户名的长读在3~10个字符之间",
-          trigger: "blur",
-        },
+          trigger: "blur"
+        }
       ],
       password: [
         { required: true, message: "请输入密码", trigger: "blur" },
@@ -232,17 +263,17 @@ export default {
           min: 6,
           max: 15,
           message: "用户名的长读在6~15个字符之间",
-          trigger: "blur",
-        },
+          trigger: "blur"
+        }
       ],
       email: [
         { required: true, message: "请输入邮箱", trigger: "blur" },
-        { validator: checkEmail },
+        { validator: checkEmail }
       ],
       mobile: [
         { required: true, message: "请输入手机", trigger: "blur" },
-        { validator: checkMobile },
-      ],
+        { validator: checkMobile }
+      ]
     };
     const addDialogVisible = ref(false);
     const addUser = () => {
@@ -267,17 +298,17 @@ export default {
       id: "",
       username: "",
       email: "",
-      mobile: "",
+      mobile: ""
     });
     const editFormRules = {
       email: [
         { required: true, message: "请输入邮箱", trigger: "blur" },
-        { validator: checkEmail },
+        { validator: checkEmail }
       ],
       mobile: [
         { required: true, message: "请输入手机", trigger: "blur" },
-        { validator: checkMobile },
-      ],
+        { validator: checkMobile }
+      ]
     };
     const editDialogVisible = ref(false);
     const editUserInfo = () => {
@@ -287,7 +318,7 @@ export default {
           proxy.$axios
             .put("users/" + editForm.id, {
               email: editForm.email,
-              mobile: editForm.mobile,
+              mobile: editForm.mobile
             })
             .then((resolve: any) => {
               let response = resolve.data;
@@ -317,7 +348,7 @@ export default {
     const getUserList = () => {
       proxy.$axios
         .get("users", {
-          params: param,
+          params: param
         })
         .then((resolve: any) => {
           let response = resolve.data;
@@ -373,9 +404,9 @@ export default {
       ElMessageBox.confirm("是否删除该用户", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning",
+        type: "warning"
       })
-        .then((resolve) => {
+        .then(resolve => {
           if (resolve === "confirm") {
             console.log("user/" + val);
             proxy.$axios.delete("users/" + val).then((resolve: any) => {
@@ -383,24 +414,24 @@ export default {
               if (resolve.data.meta.status === 200) {
                 ElMessage({
                   type: "success",
-                  message: "删除成功",
+                  message: "删除成功"
                 });
                 getUserList();
               } else {
                 ElMessage({
                   type: "error",
-                  message: "删除失败",
+                  message: "删除失败"
                 });
                 getUserList();
               }
             });
           }
         })
-        .catch((reject) => {
+        .catch(reject => {
           if (reject === "cancel") {
             ElMessage({
               type: "info",
-              message: "已取消删除",
+              message: "已取消删除"
             });
           }
         });
@@ -431,7 +462,7 @@ export default {
       }
       proxy.$axios
         .put(`users/${userInfo.userId}/role`, {
-          rid: currentSelect.value,
+          rid: currentSelect.value
         })
         .then((resolve: any) => {
           if (resolve.data.meta.status !== 200) {
@@ -475,9 +506,9 @@ export default {
       roleList,
       currentSelect,
       saveRoleInfo,
-      setRoleDialogClosed,
+      setRoleDialogClosed
     };
-  },
+  }
 };
 </script>
 <style lang="less" scoped>

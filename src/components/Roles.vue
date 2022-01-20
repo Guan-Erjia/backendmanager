@@ -57,10 +57,10 @@
           </el-col>
         </el-row>
       </el-table-column>
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column label="角色名称" prop="roleName"></el-table-column>
-      <el-table-column label="角色描述" prop="roleDesc"></el-table-column>
-      <el-table-column label="操作" width="300px" v-slot="scope">
+      <el-table-column type="index" align="center" label="#"></el-table-column>
+      <el-table-column label="角色名称" align="center" min-width="200" prop="roleName"></el-table-column>
+      <el-table-column label="角色描述" align="center" min-width="200" prop="roleDesc"></el-table-column>
+      <el-table-column label="操作" align="center" min-width="250" v-slot="scope">
         <el-button
           type="primary"
           icon="el-icon-edit"

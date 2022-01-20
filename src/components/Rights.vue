@@ -6,10 +6,26 @@
   </el-breadcrumb>
   <el-card>
     <el-table :data="rightsList.value" border stripe>
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column label="权限名称" prop="authName"></el-table-column>
-      <el-table-column label="路径" prop="path"></el-table-column>
-      <el-table-column label="权限等级" prop="level" v-slot="scope">
+      <el-table-column type="index" align="center" label="#"></el-table-column>
+      <el-table-column
+        label="权限名称"
+        align="center"
+        min-width="200"
+        prop="authName"
+      ></el-table-column>
+      <el-table-column
+        label="路径"
+        align="center"
+        min-width="200"
+        prop="path"
+      ></el-table-column>
+      <el-table-column
+        label="权限等级"
+        align="center"
+        min-width="200"
+        prop="level"
+        v-slot="scope"
+      >
         <el-tag v-if="scope.row.level === '0'">一级</el-tag>
         <el-tag type="success" v-if="scope.row.level === '1'">二级</el-tag>
         <el-tag type="warning" v-if="scope.row.level === '2'">三级</el-tag>
@@ -39,8 +55,8 @@ export default {
 
     return {
       getRightsLists,
-      rightsList,
+      rightsList
     };
-  },
+  }
 };
 </script>
