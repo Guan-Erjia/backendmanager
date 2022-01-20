@@ -116,7 +116,7 @@ export default {
       value: "cat_id",
       label: "cat_name",
       children: "children",
-      checkStrictly: true,
+      checkStrictly: true
     });
     const categoriesList: any = reactive([]);
     const getCateList = () => {
@@ -124,7 +124,7 @@ export default {
         .get("categories", {
           type: 3,
           pagenum: 1,
-          pagesize: 5,
+          pagesize: 5
         })
         .then((resolve: Iresult) => {
           if (resolve.data.meta.status === 200) {
@@ -140,7 +140,7 @@ export default {
     const addCateForm: any = reactive({
       cat_name: "a",
       cat_pid: 0,
-      cat_level: 0,
+      cat_level: 0
     });
 
     const addCateFormRules: any = reactive({
@@ -148,9 +148,9 @@ export default {
         {
           required: true,
           message: "请输入分类名称",
-          trigger: "blur",
-        },
-      ],
+          trigger: "blur"
+        }
+      ]
     });
 
     //获取添加的分类列表
@@ -159,7 +159,7 @@ export default {
     const addCategory = () => {
       proxy.$axios
         .get("categories", {
-          type: 2,
+          type: 2
         })
         .then((resolve: Iresult) => {
           if (resolve.data.meta.status === 200) {
@@ -224,9 +224,9 @@ export default {
       parentCateChanged,
       addCate,
       addCateDialogClosed,
-      getCateList,
+      getCateList
     };
-  },
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -265,6 +265,8 @@ i {
 .el-cascader {
   width: 100px;
 }
+</style>
+<style lang="less">
 .el-tree-node__content {
   height: 60px !important;
 }
